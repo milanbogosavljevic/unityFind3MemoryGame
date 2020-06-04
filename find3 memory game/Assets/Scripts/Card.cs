@@ -11,26 +11,27 @@ public class Card : MonoBehaviour
     private bool _cardIsClicked;
     private bool _playAnimation;
     private bool _scaleCard;
+    private bool _cardIsFlipedBack;
+    private SpriteRenderer _cardImage;
+    
     [SerializeField] private Sprite cardBack;
     [SerializeField] private Sprite cardFront;
     [SerializeField] private GameController gameController;
-    private SpriteRenderer _cardImage;
+    [SerializeField] public int cardValue;
+    
 
-    public Card refference;
     void Start()
     {
         _cardIsFliped = false;
         _cardIsClicked = false;
         _playAnimation = false;
         _scaleCard = false;
+        _cardIsFlipedBack = false;
         _cardImage = gameObject.GetComponent<SpriteRenderer>();
         _yRotation = 0;
         _flipAnimationSpeed = 3f;
-
-        refference = this;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (_playAnimation)
@@ -45,9 +46,7 @@ public class Card : MonoBehaviour
         {
             _cardIsClicked = true;
             _startAnimation();
-            //gameController.CardIsSelected(refference);
-            gameController.CardIsSelected(gameObject);
-            //StartCoroutine(ExampleCoroutine());
+            gameController.CardIsSelected(this);
         }
     }
 
@@ -55,12 +54,6 @@ public class Card : MonoBehaviour
     {
         _scaleCard = true;
         _playAnimation = true;
-    }
-    
-    IEnumerator ExampleCoroutine()
-    {
-        yield return new WaitForSeconds(3);
-        _startAnimation();
     }
 
     private void _flipCard()
@@ -79,7 +72,24 @@ public class Card : MonoBehaviour
             _scaleCard = true;
             _playAnimation = false;
             _cardIsFliped = true;
+            if (_cardIsFlipedBack)
+            {
+                _cardIsClicked = false;
+                _cardIsFlipedBack = false;
+                _cardIsFliped = false;
+            }
         }
         transform.rotation = Quaternion.Euler(0, _yRotation, 0);
+    }
+    
+    public void FlipBackCard()
+    {
+        _cardIsFlipedBack = true;
+        _startAnimation();
+    }
+
+    public int GetCardValue()
+    {
+        return cardValue;
     }
 }
