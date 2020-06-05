@@ -8,10 +8,10 @@ public class Card : MonoBehaviour
     private float _yRotation;
     private float _flipAnimationSpeed;
     private bool _cardIsFliped;
+    private bool _cardIsFlipedBack;
     private bool _cardIsClicked;
     private bool _playAnimation;
     private bool _scaleCard;
-    private bool _cardIsFlipedBack;
     private SpriteRenderer _cardImage;
     
     [SerializeField] private Sprite cardBack;
@@ -29,7 +29,7 @@ public class Card : MonoBehaviour
         _cardIsFlipedBack = false;
         _cardImage = gameObject.GetComponent<SpriteRenderer>();
         _yRotation = 0;
-        _flipAnimationSpeed = 3f;
+        _flipAnimationSpeed = 5f;
     }
     
     void Update()

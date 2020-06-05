@@ -1,30 +1,42 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private List<Card> allCards;
-    private List<Card> _selectedCards = new List<Card>();
-    private int _numberOfCardThatCanBeSelected = 3;
-    private int _numberOfCardsToMatch = 3;
-    private int _numberOfCardsMatched = 0;
+    [SerializeField] private GameObject allCards;
+    private readonly List<Card> _selectedCards = new List<Card>();
+    private int _numberOfCardThatCanBeSelected;
+    private int _numberOfCardsToMatch;
+    private int _numberOfCardsMatched;
+    private int _numberOfCards;
 
-    public void CardIsSelected(Card selectedCard)
+    void Start()
     {
-        _selectedCards.Add(selectedCard);
-        if (_selectedCards.Count == _numberOfCardThatCanBeSelected)
+        _numberOfCardThatCanBeSelected = 3;
+        _numberOfCardsToMatch = 3;
+        _numberOfCardsMatched = 0;
+        _numberOfCards = allCards.transform.childCount;
+        RearrangeCardsPositions();
+    }
+
+    private void RearrangeCardsPositions()
+    {
+        foreach (Transform card in allCards.transform)
         {
-            if (_cardsAreMatched())
-            {
-                _numberOfCardsMatched += _numberOfCardsToMatch;
-                _selectedCards.Clear();
-            }
-            else
-            {
-                StartCoroutine(_flipBackSelectedCards());
-            }
+            Vector3 cardPosition = card.position;
+            int randomIndex = Random.Range(0, allCards.transform.childCount);
+            Transform randomChild = allCards.transform.GetChild(randomIndex);
+            card.position = randomChild.position;
+            randomChild.position = cardPosition;
         }
+    }
+
+    private void _levelIsPassed()
+    {
+        Debug.Log("Level passed");
     }
 
     private bool _cardsAreMatched()
@@ -44,11 +56,32 @@ public class GameController : MonoBehaviour
 
     private IEnumerator _flipBackSelectedCards()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         foreach (Card card in _selectedCards)
         {
             card.FlipBackCard();
         }
         _selectedCards.Clear();
+    }
+    
+    public void CardIsSelected(Card selectedCard)
+    {
+        _selectedCards.Add(selectedCard);
+        if (_selectedCards.Count == _numberOfCardThatCanBeSelected)
+        {
+            if (_cardsAreMatched())
+            {
+                _selectedCards.Clear();
+                _numberOfCardsMatched += _numberOfCardsToMatch;
+                if (_numberOfCardsMatched == _numberOfCards)
+                {
+                    _levelIsPassed();
+                }
+            }
+            else
+            {
+                StartCoroutine(_flipBackSelectedCards());
+            }
+        }
     }
 }
