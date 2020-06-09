@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour
     private int _numberOfCardsMatched;
     private int _numberOfCards;
 
+    [SerializeField] private Timer timer;
+
     void Start()
     {
         _numberOfCardThatCanBeSelected = 3;
@@ -20,6 +22,7 @@ public class GameController : MonoBehaviour
         _numberOfCardsMatched = 0;
         _numberOfCards = allCards.transform.childCount;
         RearrangeCardsPositions();
+        timer.ActivateTimer(true);
     }
 
     private void RearrangeCardsPositions()
@@ -36,7 +39,10 @@ public class GameController : MonoBehaviour
 
     private void _levelIsPassed()
     {
-        Debug.Log("Level passed");
+        timer.ActivateTimer(false);
+        int[] time = timer.GetTime();
+        print(time[0]);
+        print(time[1]);
     }
 
     private bool _cardsAreMatched()

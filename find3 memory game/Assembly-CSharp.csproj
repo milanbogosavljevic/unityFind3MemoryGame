@@ -59,7 +59,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Card.cs" />
+     <Compile Include="Assets\Scripts\DataSaver.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\PlayerInfo.cs" />
+     <Compile Include="Assets\Scripts\Timer.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/UnityProjects/unityFind3MemoryGame/find3 memory game/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
