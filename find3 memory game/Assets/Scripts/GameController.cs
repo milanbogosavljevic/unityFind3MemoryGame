@@ -2,27 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private GameObject allCards;
+    [SerializeField] private Text bestTimeText;
+    [SerializeField] private Timer timer;
+    
     private readonly List<Card> _selectedCards = new List<Card>();
     private int _numberOfCardThatCanBeSelected;
     private int _numberOfCardsToMatch;
     private int _numberOfCardsMatched;
     private int _numberOfCards;
+    private int _flipBackCardsCounter;
+    private int[] _bestTime = {1000,1000};
 
-    [SerializeField] private Timer timer;
+    public bool canSelectCards;
 
     void Start()
     {
         _numberOfCardThatCanBeSelected = 3;
         _numberOfCardsToMatch = 3;
         _numberOfCardsMatched = 0;
+        _flipBackCardsCounter = 0;
         _numberOfCards = allCards.transform.childCount;
+        _setBestTime();
         RearrangeCardsPositions();
         timer.ActivateTimer(true);
+        canSelectCards = true;
     }
 
     private void RearrangeCardsPositions()
@@ -41,8 +50,7 @@ public class GameController : MonoBehaviour
     {
         timer.ActivateTimer(false);
         int[] time = timer.GetTime();
-        print(time[0]);
-        print(time[1]);
+        _checkBestTime(time);
     }
 
     private bool _cardsAreMatched()
@@ -70,24 +78,62 @@ public class GameController : MonoBehaviour
         _selectedCards.Clear();
     }
     
-    public void CardIsSelected(Card selectedCard)
+
+
+    private void _setBestTime()
     {
-        _selectedCards.Add(selectedCard);
-        if (_selectedCards.Count == _numberOfCardThatCanBeSelected)
+        if (PlayerPrefs.HasKey("level1Minutes"))
         {
-            if (_cardsAreMatched())
+            _bestTime[0] = PlayerPrefs.GetInt("level1Minutes");
+            _bestTime[1] = PlayerPrefs.GetInt("level1Seconds");
+            bestTimeText.text = _bestTime[0].ToString() + ":" + _bestTime[1].ToString();
+        }
+    }
+
+    private void _checkBestTime(int[] time)
+    {
+        if (_bestTime[0] >= time[0])
+        {
+            if (_bestTime[1] > time[1])
             {
-                _selectedCards.Clear();
-                _numberOfCardsMatched += _numberOfCardsToMatch;
-                if (_numberOfCardsMatched == _numberOfCards)
-                {
-                    _levelIsPassed();
-                }
+                bestTimeText.text = time[0].ToString() + ":" + time[1].ToString();
+                _bestTime[0] = time[0];
+                _bestTime[1] = time[1];
+                PlayerPrefs.SetInt("level1Minutes", time[0]);
+                PlayerPrefs.SetInt("level1Seconds", time[1]);
             }
-            else
-            {
-                StartCoroutine(_flipBackSelectedCards());
-            }
+        }
+    }   
+    
+    public void CardIsSelected(Card selectedCard)
+         {
+             _selectedCards.Add(selectedCard);
+             if (_selectedCards.Count == _numberOfCardThatCanBeSelected)
+             {
+                 if (_cardsAreMatched())
+                 {
+                     _selectedCards.Clear();
+                     _numberOfCardsMatched += _numberOfCardsToMatch;
+                     if (_numberOfCardsMatched == _numberOfCards)
+                     {
+                         _levelIsPassed();
+                     }
+                 }
+                 else
+                 {
+                     canSelectCards = false;
+                     StartCoroutine(_flipBackSelectedCards());
+                 }
+             }
+         }
+    
+    public void CountCardsThatFlipsBack()
+    {
+        _flipBackCardsCounter++;
+        if (_flipBackCardsCounter == _numberOfCardThatCanBeSelected)
+        {
+            canSelectCards = true;
+            _flipBackCardsCounter = 0;
         }
     }
 }

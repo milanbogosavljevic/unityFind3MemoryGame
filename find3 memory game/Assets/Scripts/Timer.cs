@@ -60,7 +60,7 @@ public class Timer : MonoBehaviour
 
     public int[] GetTime()
     {
-        int[ ] doorNumbersOnMyStreet = { _minutes, _seconds };
-        return doorNumbersOnMyStreet;
+        int[ ] levelTime = { _minutes, _seconds };
+        return levelTime;
     }
 }

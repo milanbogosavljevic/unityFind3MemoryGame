@@ -28,7 +28,7 @@ public class Card : MonoBehaviour
         _scaleCard = false;
         _cardIsFlipedBack = false;
         _cardImage = gameObject.GetComponent<SpriteRenderer>();
-        _yRotation = 0;
+        _yRotation = 0f;
         _flipAnimationSpeed = 5f;
     }
     
@@ -42,12 +42,16 @@ public class Card : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!_cardIsClicked)
+        if (gameController.canSelectCards)
         {
-            _cardIsClicked = true;
-            _startAnimation();
-            gameController.CardIsSelected(this);
+            if (!_cardIsClicked)
+            {
+                _cardIsClicked = true;
+                _startAnimation();
+                gameController.CardIsSelected(this);
+            }
         }
+
     }
 
     private void _startAnimation()
@@ -77,11 +81,12 @@ public class Card : MonoBehaviour
                 _cardIsClicked = false;
                 _cardIsFlipedBack = false;
                 _cardIsFliped = false;
+                gameController.CountCardsThatFlipsBack();
             }
         }
         transform.rotation = Quaternion.Euler(0, _yRotation, 0);
     }
-    
+
     public void FlipBackCard()
     {
         _cardIsFlipedBack = true;

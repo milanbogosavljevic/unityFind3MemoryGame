@@ -98,6 +98,7 @@ MonoBehaviour:
   cardBack: {fileID: 21300000, guid: e7f861604292cbf4cae7d3314d511aed, type: 3}
   cardFront: {fileID: 21300000, guid: b093441f79021d64d897c7f0ee8d97fb, type: 3}
   gameController: {fileID: 0}
+  cardValue: 0
 --- !u!61 &8719635714580971733
 BoxCollider2D:
   m_ObjectHideFlags: 0
