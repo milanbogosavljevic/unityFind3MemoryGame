@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject allCards;
     [SerializeField] private Text bestTimeText;
     [SerializeField] private Timer timer;
+    [SerializeField] private int levelNumber;
     
     private readonly List<Card> _selectedCards = new List<Card>();
     private int _numberOfCardThatCanBeSelected;
@@ -82,11 +83,15 @@ public class GameController : MonoBehaviour
 
     private void _setBestTime()
     {
-        if (PlayerPrefs.HasKey("level1Minutes"))
+        string minutesKey = "level" + levelNumber + "Minutes";
+        string secondsKey = "level" + levelNumber + "Seconds";
+        if (PlayerPrefs.HasKey(minutesKey))
         {
-            _bestTime[0] = PlayerPrefs.GetInt("level1Minutes");
-            _bestTime[1] = PlayerPrefs.GetInt("level1Seconds");
-            bestTimeText.text = _bestTime[0].ToString() + ":" + _bestTime[1].ToString();
+            _bestTime[0] = PlayerPrefs.GetInt(minutesKey);
+            _bestTime[1] = PlayerPrefs.GetInt(secondsKey);
+            string minutes = _bestTime[0] < 10 ? "0" + _bestTime[0].ToString() : _bestTime[0].ToString();
+            string seconds = _bestTime[1] < 10 ? "0" + _bestTime[1].ToString() : _bestTime[1].ToString();
+            bestTimeText.text = minutes + ":" + seconds;
         }
     }
 
@@ -96,11 +101,15 @@ public class GameController : MonoBehaviour
         {
             if (_bestTime[1] > time[1])
             {
-                bestTimeText.text = time[0].ToString() + ":" + time[1].ToString();
+                string minutesKey = "level" + levelNumber + "Minutes";
+                string secondsKey = "level" + levelNumber + "Seconds";
+                string minutes = time[0] < 10 ? "0" + time[0].ToString() : time[0].ToString();
+                string seconds = time[1] < 10 ? "0" + time[1].ToString() : time[1].ToString();
+                bestTimeText.text = minutes + ":" + seconds;
                 _bestTime[0] = time[0];
                 _bestTime[1] = time[1];
-                PlayerPrefs.SetInt("level1Minutes", time[0]);
-                PlayerPrefs.SetInt("level1Seconds", time[1]);
+                PlayerPrefs.SetInt(minutesKey, time[0]);
+                PlayerPrefs.SetInt(secondsKey, time[1]);
             }
         }
     }   

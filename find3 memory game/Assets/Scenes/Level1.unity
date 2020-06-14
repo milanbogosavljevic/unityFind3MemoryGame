@@ -754,6 +754,8 @@ MonoBehaviour:
   allCards: {fileID: 1391079163}
   bestTimeText: {fileID: 1071619789}
   timer: {fileID: 1287084128}
+  levelNumber: 1
+  canSelectCards: 0
 --- !u!4 &888312112
 Transform:
   m_ObjectHideFlags: 0
