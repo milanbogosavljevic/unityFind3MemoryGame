@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private int levelNumber;
     
     private readonly List<Card> _selectedCards = new List<Card>();
+    private List<Card> _unmatchedCards = new List<Card>();
     private int _numberOfCardThatCanBeSelected;
     private int _numberOfCardsToMatch;
     private int _numberOfCardsMatched;
@@ -39,6 +40,7 @@ public class GameController : MonoBehaviour
     {
         foreach (Transform card in allCards.transform)
         {
+            _unmatchedCards.Add(card.GetComponent<Card>());
             Vector3 cardPosition = card.position;
             int randomIndex = Random.Range(0, allCards.transform.childCount);
             Transform randomChild = allCards.transform.GetChild(randomIndex);
