@@ -2032,6 +2032,8 @@ MonoBehaviour:
   bestTimeText: {fileID: 1687077384}
   timer: {fileID: 626456217}
   levelNumber: 2
+  switchCardsPositionsFeatureIsActive: 1
+  numberOfSelectedCardsToActivateSwitchPosition: 10
   canSelectCards: 0
 --- !u!4 &2101986944
 Transform:

@@ -12,7 +12,10 @@ public class Card : MonoBehaviour
     private bool _cardIsClicked;
     private bool _playAnimation;
     private bool _scaleCard;
+    private bool _moveCardToPosition;
     private SpriteRenderer _cardImage;
+    private Vector3 _targetPosition;
+    private float _movingSpeed;
     
     [SerializeField] private Sprite cardBack;
     [SerializeField] private Sprite cardFront;
@@ -27,9 +30,11 @@ public class Card : MonoBehaviour
         _playAnimation = false;
         _scaleCard = false;
         _cardIsFlipedBack = false;
+        _moveCardToPosition = false;
         _cardImage = gameObject.GetComponent<SpriteRenderer>();
         _yRotation = 0f;
         _flipAnimationSpeed = 5f;
+        _movingSpeed = 3.0f;
     }
     
     void Update()
@@ -37,6 +42,16 @@ public class Card : MonoBehaviour
         if (_playAnimation)
         {
             _flipCard();
+        }
+
+        if (_moveCardToPosition)
+        {
+            float step =  _movingSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, step);
+            if (Vector3.Distance(transform.position, _targetPosition) < 0.001f)
+            {
+                _moveCardToPosition = false;
+            }
         }
     }
 
@@ -96,5 +111,11 @@ public class Card : MonoBehaviour
     public int GetCardValue()
     {
         return cardValue;
+    }
+
+    public void MoveToPosition(Vector3 targetPosition)
+    {
+        _targetPosition = targetPosition;
+        _moveCardToPosition = true;
     }
 }

@@ -12,23 +12,28 @@ public class GameController : MonoBehaviour
     [SerializeField] private Timer timer;
     [SerializeField] private int levelNumber;
     
+    // polja koja se kontrolisu iz editora
+    [SerializeField] private bool switchCardsPositionsFeatureIsActive;
+    [SerializeField] private int numberOfSelectedCardsToActivateSwitchPosition;
+    
+    private const int _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED = 3;
+    private const int _NUMBER_OF_CARDS_TO_MATCH = 3;
+    
     private readonly List<Card> _selectedCards = new List<Card>();
     private List<Card> _unmatchedCards = new List<Card>();
-    private int _numberOfCardThatCanBeSelected;
-    private int _numberOfCardsToMatch;
     private int _numberOfCardsMatched;
     private int _numberOfCards;
     private int _flipBackCardsCounter;
+    private int _cardSelectCounter;
     private int[] _bestTime = {1000,1000};
 
-    public bool canSelectCards;
+    [HideInInspector] public bool canSelectCards;
 
     void Start()
     {
-        _numberOfCardThatCanBeSelected = 3;
-        _numberOfCardsToMatch = 3;
         _numberOfCardsMatched = 0;
         _flipBackCardsCounter = 0;
+        _cardSelectCounter = 0;
         _numberOfCards = allCards.transform.childCount;
         _setBestTime();
         RearrangeCardsPositions();
@@ -68,7 +73,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        return counter == _numberOfCardsToMatch;
+        return counter == _NUMBER_OF_CARDS_TO_MATCH;
     }
 
     private IEnumerator _flipBackSelectedCards()
@@ -80,8 +85,24 @@ public class GameController : MonoBehaviour
         }
         _selectedCards.Clear();
     }
-    
 
+    // todo declarisati click counter koji kada dodje do nekog broja poziva ovu metodu
+    private void _switchCardsPosition()
+    {
+        if (_unmatchedCards.Count > _NUMBER_OF_CARDS_TO_MATCH)
+        {
+            int randomIndex1 = Random.Range(0, _unmatchedCards.Count);
+            int randomIndex2 = Random.Range(0, _unmatchedCards.Count);
+            while (randomIndex2 == randomIndex1)
+            {
+                randomIndex2 = Random.Range(0, _unmatchedCards.Count);
+            }
+            Card card1 = _unmatchedCards[randomIndex1];
+            Card card2 = _unmatchedCards[randomIndex2];
+            card2.MoveToPosition(card1.transform.position);
+            card1.MoveToPosition(card2.transform.position);
+        }
+    }
 
     private void _setBestTime()
     {
@@ -117,31 +138,60 @@ public class GameController : MonoBehaviour
     }   
     
     public void CardIsSelected(Card selectedCard)
+    {
+        
+        _selectedCards.Add(selectedCard);
+         if (_selectedCards.Count == _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED)
          {
-             _selectedCards.Add(selectedCard);
-             if (_selectedCards.Count == _numberOfCardThatCanBeSelected)
+             if (_cardsAreMatched())
              {
-                 if (_cardsAreMatched())
+                 int valueToRemove = _selectedCards[0].cardValue;
+                 _filterUnmatchedCards(valueToRemove);
+                 _selectedCards.Clear();
+                 _numberOfCardsMatched += _NUMBER_OF_CARDS_TO_MATCH;
+                 if (_numberOfCardsMatched == _numberOfCards)
                  {
-                     _selectedCards.Clear();
-                     _numberOfCardsMatched += _numberOfCardsToMatch;
-                     if (_numberOfCardsMatched == _numberOfCards)
-                     {
-                         _levelIsPassed();
-                     }
-                 }
-                 else
-                 {
-                     canSelectCards = false;
-                     StartCoroutine(_flipBackSelectedCards());
+                     _levelIsPassed();
                  }
              }
+             else
+             {
+                 canSelectCards = false;
+                 StartCoroutine(_flipBackSelectedCards());
+             }
          }
+         _checkSwitchFeature();
+    }
+
+    private void _checkSwitchFeature()
+    {
+        if (switchCardsPositionsFeatureIsActive)
+        {
+            _cardSelectCounter++;
+            if (_cardSelectCounter == numberOfSelectedCardsToActivateSwitchPosition)
+            {
+                _cardSelectCounter = 0;
+                _switchCardsPosition();
+            }
+        }
+    }
+
+    private void _filterUnmatchedCards(int valueToRemove)
+    {
+        int numberOfCards = _unmatchedCards.Count - 1;
+        for (int i = numberOfCards; i >= 0; i--)
+        {
+            if (_unmatchedCards[i].cardValue == valueToRemove)
+            {
+                _unmatchedCards.Remove(_unmatchedCards[i]);
+            }
+        }
+    }
     
     public void CountCardsThatFlipsBack()
     {
         _flipBackCardsCounter++;
-        if (_flipBackCardsCounter == _numberOfCardThatCanBeSelected)
+        if (_flipBackCardsCounter == _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED)
         {
             canSelectCards = true;
             _flipBackCardsCounter = 0;
