@@ -15,6 +15,10 @@ public class GameController : MonoBehaviour
     // polja koja se kontrolisu iz editora
     [SerializeField] private bool switchCardsPositionsFeatureIsActive;
     [SerializeField] private int numberOfSelectedCardsToActivateSwitchPosition;
+    [SerializeField] private bool cardsMovingHorizontalIsActive;
+    [SerializeField] private float horizontalMovingSpeed;
+    [SerializeField] private bool scaleCardFeatureIsActive;
+    [SerializeField] private int numberOfSelectedCardToActivateScaleCard;
     
     private const int _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED = 3;
     private const int _NUMBER_OF_CARDS_TO_MATCH = 3;
@@ -25,6 +29,7 @@ public class GameController : MonoBehaviour
     private int _numberOfCards;
     private int _flipBackCardsCounter;
     private int _cardSelectCounter;
+    private int _scaleCardFeatureCounter;
     private int[] _bestTime = {1000,1000};
 
     [HideInInspector] public bool canSelectCards;
@@ -34,11 +39,13 @@ public class GameController : MonoBehaviour
         _numberOfCardsMatched = 0;
         _flipBackCardsCounter = 0;
         _cardSelectCounter = 0;
+        _scaleCardFeatureCounter = 0;
         _numberOfCards = allCards.transform.childCount;
         _setBestTime();
         RearrangeCardsPositions();
         timer.ActivateTimer(true);
         canSelectCards = true;
+        _activateCardsHorizontalMovement(cardsMovingHorizontalIsActive, horizontalMovingSpeed);
     }
 
     private void RearrangeCardsPositions()
@@ -51,6 +58,11 @@ public class GameController : MonoBehaviour
             Transform randomChild = allCards.transform.GetChild(randomIndex);
             card.position = randomChild.position;
             randomChild.position = cardPosition;
+            if (scaleCardFeatureIsActive)
+            {
+                randomChild.GetComponent<Card>().SetCardScale("up");
+                card.GetComponent<Card>().SetCardScale("down");
+            }
         }
     }
 
@@ -86,7 +98,6 @@ public class GameController : MonoBehaviour
         _selectedCards.Clear();
     }
 
-    // todo declarisati click counter koji kada dodje do nekog broja poziva ovu metodu
     private void _switchCardsPosition()
     {
         if (_unmatchedCards.Count > _NUMBER_OF_CARDS_TO_MATCH)
@@ -161,6 +172,7 @@ public class GameController : MonoBehaviour
              }
          }
          _checkSwitchFeature();
+         _checkScaleFeature();
     }
 
     private void _checkSwitchFeature()
@@ -176,6 +188,19 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void _checkScaleFeature()
+    {
+        if (scaleCardFeatureIsActive)
+        {
+            _scaleCardFeatureCounter++;
+            if (_scaleCardFeatureCounter == numberOfSelectedCardToActivateScaleCard)
+            {
+                _scaleCardFeatureCounter = 0;
+                _activateScaleCardAnimation();
+            }
+        }
+    }
+
     private void _filterUnmatchedCards(int valueToRemove)
     {
         int numberOfCards = _unmatchedCards.Count - 1;
@@ -185,6 +210,31 @@ public class GameController : MonoBehaviour
             {
                 _unmatchedCards.Remove(_unmatchedCards[i]);
             }
+        }
+    }
+
+    private void _activateCardsHorizontalMovement(bool activate, float speed)
+    {
+        foreach (Transform card in allCards.transform)
+        {
+            card.GetComponent<Card>().StartMovingHorizontal(activate, speed);
+        }
+    }
+
+    private void _activateScaleCardAnimation()
+    {
+        if (_unmatchedCards.Count > _NUMBER_OF_CARDS_TO_MATCH)
+        {
+            int randomIndex1 = Random.Range(0, _unmatchedCards.Count);
+            int randomIndex2 = Random.Range(0, _unmatchedCards.Count);
+            while (randomIndex2 == randomIndex1)
+            {
+                randomIndex2 = Random.Range(0, _unmatchedCards.Count);
+            }
+            Card card1 = _unmatchedCards[randomIndex1];
+            Card card2 = _unmatchedCards[randomIndex2];
+            card2.ActivateScaleAnimation(true);
+            card1.ActivateScaleAnimation(true);
         }
     }
     
