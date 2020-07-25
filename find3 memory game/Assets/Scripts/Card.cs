@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    private float _yRotation;
+    private float _zRotation;
+    private float _rotation;
     private float _flipAnimationSpeed;
     private bool _cardIsFliped;
     private bool _cardIsFlipedBack;
@@ -23,7 +24,7 @@ public class Card : MonoBehaviour
     private Vector3 _originalPosition;//todo ako nekad budem hteo da se zaustavi karta da zna gde da se vrati
     private float _upScale;
     private float _downScale;
-    
+
     [SerializeField] private Sprite cardBack;
     [SerializeField] private Sprite cardFront;
     [SerializeField] private GameController gameController;
@@ -41,14 +42,14 @@ public class Card : MonoBehaviour
         _moveCardHorizontal = false;
         _scaleCard = false;
         _cardImage = gameObject.GetComponent<SpriteRenderer>();
-        _yRotation = 0f;
-        _flipAnimationSpeed = 5f;
+        _rotation = 0f;
+        _flipAnimationSpeed = 7f;
         _movingSpeed = 3.0f;
         _upScale = 0.7f;
         _downScale = 0.3f;
         _originalPosition = transform.position;
     }
-    
+
     void Update()
     {
         if (_playAnimation)
@@ -79,6 +80,12 @@ public class Card : MonoBehaviour
         {
             ScaleCard();
         }
+    }
+
+    public void SetZRotation(float rotation)
+    {
+        transform.rotation = Quaternion.Euler(0, 0, rotation);
+        _zRotation = rotation;
     }
 
     private void ScaleCard()
@@ -146,17 +153,17 @@ public class Card : MonoBehaviour
 
     private void _flipCard()
     {
-        _yRotation = _rotateCard ? _yRotation + _flipAnimationSpeed : _yRotation - _flipAnimationSpeed;
-        if (_yRotation > 90f)
+        _rotation = _rotateCard ? _rotation + _flipAnimationSpeed : _rotation - _flipAnimationSpeed;
+        if (_rotation > 90f)
         {
-            _yRotation = 90f;
+            _rotation = 90f;
             _cardImage.sprite = _cardIsFliped ? cardBack : cardFront;
             _rotateCard = false;
         }
 
-        if (_yRotation < 0f)
+        if (_rotation < 0f)
         {
-            _yRotation = 0f;
+            _rotation = 0f;
             _rotateCard = true;
             _playAnimation = false;
             _cardIsFliped = true;
@@ -168,7 +175,16 @@ public class Card : MonoBehaviour
                 gameController.CountCardsThatFlipsBack();
             }
         }
-        transform.rotation = Quaternion.Euler(0, _yRotation, 0);
+        
+        if (_zRotation > 0f || _zRotation < 0f)
+        {
+            transform.rotation = Quaternion.Euler(_rotation, 0, _zRotation);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, _rotation, _zRotation);
+        }
+        
     }
 
     public void FlipBackCard()

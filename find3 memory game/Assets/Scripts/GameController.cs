@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private float horizontalMovingSpeed;
     [SerializeField] private bool scaleCardFeatureIsActive;
     [SerializeField] private int numberOfSelectedCardToActivateScaleCard;
+    [SerializeField] private bool randomizeCardRotationOnStart;
     
     private const int _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED = 3;
     private const int _NUMBER_OF_CARDS_TO_MATCH = 3;
@@ -50,6 +51,7 @@ public class GameController : MonoBehaviour
 
     private void RearrangeCardsPositions()
     {
+        float[] zRotations = {0f,90f,-90f};
         foreach (Transform card in allCards.transform)
         {
             _unmatchedCards.Add(card.GetComponent<Card>());
@@ -62,6 +64,13 @@ public class GameController : MonoBehaviour
             {
                 randomChild.GetComponent<Card>().SetCardScale("up");
                 card.GetComponent<Card>().SetCardScale("down");
+            }
+
+            if (randomizeCardRotationOnStart)
+            {
+                int randomZIndex = Random.Range(0, zRotations.Length);
+                float randomZRotation = zRotations[randomZIndex];
+                card.GetComponent<Card>().SetZRotation(randomZRotation);
             }
         }
     }
