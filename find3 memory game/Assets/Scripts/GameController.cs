@@ -140,21 +140,29 @@ public class GameController : MonoBehaviour
 
     private void _checkBestTime(int[] time)
     {
-        if (_bestTime[0] >= time[0])
+        bool hasNewBestTime = false;
+        if (_bestTime[0] > time[0])
+        {
+            hasNewBestTime = true;
+        }else if (_bestTime[0] == time[0])
         {
             if (_bestTime[1] > time[1])
             {
-                string minutesKey = "level" + levelNumber + "Minutes";
-                string secondsKey = "level" + levelNumber + "Seconds";
-                string minutes = time[0] < 10 ? "0" + time[0].ToString() : time[0].ToString();
-                string seconds = time[1] < 10 ? "0" + time[1].ToString() : time[1].ToString();
-                bestTimeText.text = minutes + ":" + seconds;
-                _bestTime[0] = time[0];
-                _bestTime[1] = time[1];
-                PlayerPrefs.SetInt(minutesKey, time[0]);
-                PlayerPrefs.SetInt(secondsKey, time[1]);
+                hasNewBestTime = true;
             }
         }
+
+        if (!hasNewBestTime) return;
+        
+        string minutesKey = "level" + levelNumber + "Minutes";
+        string secondsKey = "level" + levelNumber + "Seconds";
+        string minutes = time[0] < 10 ? "0" + time[0].ToString() : time[0].ToString();
+        string seconds = time[1] < 10 ? "0" + time[1].ToString() : time[1].ToString();
+        bestTimeText.text = minutes + ":" + seconds;
+        _bestTime[0] = time[0];
+        _bestTime[1] = time[1];
+        PlayerPrefs.SetInt(minutesKey, time[0]);
+        PlayerPrefs.SetInt(secondsKey, time[1]);
     }   
     
     public void CardIsSelected(Card selectedCard)
@@ -257,3 +265,10 @@ public class GameController : MonoBehaviour
         }
     }
 }
+
+/* dodavanje nivoa
+    copy svih komponenti
+    dodavanje na build settings listu
+    dodavanje dugmeta na display listu + dodavanje dugmeta u listu controllera + parametra za click
+    u gamecontroller componenti u editoru promeniti Level Number
+ */

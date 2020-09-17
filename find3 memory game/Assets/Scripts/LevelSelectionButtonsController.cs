@@ -15,6 +15,7 @@ public class LevelSelectionButtonsController : MonoBehaviour
 
     private void _setButtonsBestTime()
     {
+        print("levels " + levelButtons.Count);
         for (int i = 0; i < levelButtons.Count; i++)
         {
             int levelNumber = i + 1;
@@ -37,7 +38,12 @@ public class LevelSelectionButtonsController : MonoBehaviour
     
     public void LoadLevel(int levelNum)
     {
-        int levelIndex = levelNum + 1;
+        int levelIndex = levelNum + 3;
         SceneManager.LoadScene(levelIndex);
+    }
+
+    public void BackToWelcomeScreen()
+    {
+        SceneManager.LoadScene(0);
     }
 }

@@ -31,7 +31,7 @@ public class Card : MonoBehaviour
     [SerializeField] public int cardValue;
 
 
-    void Start()
+    void Awake()
     {
         _cardIsFliped = false;
         _cardIsClicked = false;
