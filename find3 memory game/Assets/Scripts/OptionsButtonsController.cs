@@ -12,8 +12,11 @@ public class OptionsButtonsController : MonoBehaviour
     
     [SerializeField]
     private Toggle musicToggle;
+    
+    private SoundController _soundController;
     void Start()
     {
+        _soundController = GameObject.FindWithTag("SoundController").GetComponent<SoundController>();
         CheckIfMusicIsOn();
         CheckIfSoundIsOn();
     }
@@ -52,21 +55,13 @@ public class OptionsButtonsController : MonoBehaviour
     {
         string soundPlay = soundToggle.isOn ? "on" : "off";
         PlayerPrefs.SetString("SoundPlay", soundPlay);
+        _soundController.SetSoundOn(soundToggle.isOn);
     }
 
     public void SetMusicInGame()
     {
         string musicPlay = musicToggle.isOn ? "on" : "off";
         PlayerPrefs.SetString("MusicPlay", musicPlay);
-    }
-
-    public bool IsMusicOn()
-    {
-        return musicToggle.isOn;
-    }
-    
-    public bool IsSoundOn()
-    {
-        return soundToggle.isOn;
+        _soundController.SetMusicOn(musicToggle.isOn);
     }
 }

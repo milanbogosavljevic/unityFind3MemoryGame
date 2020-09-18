@@ -33,6 +33,8 @@ public class GameController : MonoBehaviour
     private int _scaleCardFeatureCounter;
     private int[] _bestTime = {1000,1000};
 
+    private SoundController _soundController;
+
     [HideInInspector] public bool canSelectCards;
 
     void Start()
@@ -47,6 +49,8 @@ public class GameController : MonoBehaviour
         timer.ActivateTimer(true);
         canSelectCards = true;
         _activateCardsHorizontalMovement(cardsMovingHorizontalIsActive, horizontalMovingSpeed);
+        
+        _soundController = GameObject.FindWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void RearrangeCardsPositions()
@@ -167,7 +171,7 @@ public class GameController : MonoBehaviour
     
     public void CardIsSelected(Card selectedCard)
     {
-        
+        _soundController.PlaySelectCardSound();
         _selectedCards.Add(selectedCard);
          if (_selectedCards.Count == _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED)
          {
