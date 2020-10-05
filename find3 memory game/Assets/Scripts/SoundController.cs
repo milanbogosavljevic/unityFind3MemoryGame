@@ -14,8 +14,24 @@ public class SoundController : MonoBehaviour
 
     private void Awake()
     {
-        _musicIsOn = PlayerPrefs.GetString("MusicPlay") == "on";
-        _soundIsOn = PlayerPrefs.GetString("SoundPlay") == "on";
+        if (PlayerPrefs.HasKey("MusicPlay"))
+        {
+            _musicIsOn = PlayerPrefs.GetString("MusicPlay") == "on";
+        }
+        else
+        {
+            _musicIsOn = true;
+        }
+        
+        if (PlayerPrefs.HasKey("SoundPlay"))
+        {
+            _soundIsOn = PlayerPrefs.GetString("SoundPlay") == "on";
+        }
+        else
+        {
+            _soundIsOn = true;
+        }
+        
         
         DontDestroyOnLoad(this.gameObject);
         GameObject[] objs = GameObject.FindGameObjectsWithTag("SoundController");

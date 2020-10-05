@@ -20,18 +20,24 @@ public class GameController : MonoBehaviour
     [SerializeField] private bool scaleCardFeatureIsActive;
     [SerializeField] private int numberOfSelectedCardToActivateScaleCard;
     [SerializeField] private bool randomizeCardRotationOnStart;
+    [SerializeField] private bool flipBackCardsFeatureIsActive;
+    [SerializeField] private int numberOfSelectedCardToActivateFlipBackCard;
     
     private const int _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED = 3;
     private const int _NUMBER_OF_CARDS_TO_MATCH = 3;
     
     private readonly List<Card> _selectedCards = new List<Card>();
     private List<Card> _unmatchedCards = new List<Card>();
+    private List<Card> _matchedCards = new List<Card>();
     private int _numberOfCardsMatched;
     private int _numberOfCards;
     private int _flipBackCardsCounter;
     private int _cardSelectCounter;
     private int _scaleCardFeatureCounter;
+    private int _flipBackCardsFeatureCounter;
     private int[] _bestTime = {1000,1000};
+    private bool _levelPassed;
+    private bool _shouldCheckFlipBackCardFeature;
 
     private SoundController _soundController;
 
@@ -43,14 +49,41 @@ public class GameController : MonoBehaviour
         _flipBackCardsCounter = 0;
         _cardSelectCounter = 0;
         _scaleCardFeatureCounter = 0;
+        _flipBackCardsFeatureCounter = 0;
         _numberOfCards = allCards.transform.childCount;
         _setBestTime();
         RearrangeCardsPositions();
+        SetIconsAlpha();
         timer.ActivateTimer(true);
         canSelectCards = true;
         _activateCardsHorizontalMovement(cardsMovingHorizontalIsActive, horizontalMovingSpeed);
         
         _soundController = GameObject.FindWithTag("SoundController").GetComponent<SoundController>();
+    }
+
+    private void SetIconsAlpha()
+    {
+        GameObject icons = GameObject.Find("Icons");
+        Color disabledColor = new Color(1f,1f,1f,0.2f);
+        Color enabledColor = new Color(0.285f,0.933f,0.207f,1f);
+        
+        SpriteRenderer turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<SpriteRenderer>();
+        SpriteRenderer rotationIcon = icons.transform.Find("rotationIcon").GetComponent<SpriteRenderer>();
+        SpriteRenderer movingIcon = icons.transform.Find("movingIcon").GetComponent<SpriteRenderer>();
+        SpriteRenderer switchPositionIcon = icons.transform.Find("switchPositionIcon").GetComponent<SpriteRenderer>();
+        SpriteRenderer scaleIcon = icons.transform.Find("scaleIcon").GetComponent<SpriteRenderer>();
+
+        turnBackIcon.color = flipBackCardsFeatureIsActive ? enabledColor : disabledColor;
+        rotationIcon.color = randomizeCardRotationOnStart ? enabledColor : disabledColor;
+        movingIcon.color = cardsMovingHorizontalIsActive ? enabledColor : disabledColor;
+        switchPositionIcon.color = switchCardsPositionsFeatureIsActive ? enabledColor : disabledColor;
+        scaleIcon.color = scaleCardFeatureIsActive ? enabledColor : disabledColor;
+
+        /*if (!flipBackCardsFeatureIsActive) { turnBackIcon.color = disabledColor; }
+        if (!randomizeCardRotationOnStart) { rotationIcon.color = disabledColor; }
+        if (!cardsMovingHorizontalIsActive) { movingIcon.color = disabledColor; }
+        if (!switchCardsPositionsFeatureIsActive) { switchPositionIcon.color = disabledColor; }
+        if (!scaleCardFeatureIsActive) { scaleIcon.color = disabledColor; }*/
     }
 
     private void RearrangeCardsPositions()
@@ -81,6 +114,7 @@ public class GameController : MonoBehaviour
 
     private void _levelIsPassed()
     {
+        _soundController.PlayLevelPassedSound();
         timer.ActivateTimer(false);
         int[] time = timer.GetTime();
         _checkBestTime(time);
@@ -171,18 +205,22 @@ public class GameController : MonoBehaviour
     
     public void CardIsSelected(Card selectedCard)
     {
+        _shouldCheckFlipBackCardFeature = true;
         _soundController.PlaySelectCardSound();
         _selectedCards.Add(selectedCard);
          if (_selectedCards.Count == _NUMBER_OF_CARDS_THAT_CAN_BE_SELECTED)
          {
              if (_cardsAreMatched())
              {
+                 _shouldCheckFlipBackCardFeature = false;
                  int valueToRemove = _selectedCards[0].cardValue;
                  _filterUnmatchedCards(valueToRemove);
+                 _matchedCards.AddRange(_selectedCards);
                  _selectedCards.Clear();
                  _numberOfCardsMatched += _NUMBER_OF_CARDS_TO_MATCH;
                  if (_numberOfCardsMatched == _numberOfCards)
                  {
+                     _levelPassed = true;
                      _levelIsPassed();
                  }
              }
@@ -192,8 +230,51 @@ public class GameController : MonoBehaviour
                  StartCoroutine(_flipBackSelectedCards());
              }
          }
-         _checkSwitchFeature();
-         _checkScaleFeature();
+         
+         print(_shouldCheckFlipBackCardFeature);
+
+         if (!_levelPassed)
+         {
+              _checkSwitchFeature();
+              _checkScaleFeature();
+              if (_shouldCheckFlipBackCardFeature)
+              {
+                  _checkFlipBackFeature();
+              }
+         }
+    }
+
+    private void _checkFlipBackFeature()
+    {
+        if (flipBackCardsFeatureIsActive)
+        {
+            _flipBackCardsFeatureCounter++;
+            if (_flipBackCardsFeatureCounter == numberOfSelectedCardToActivateFlipBackCard)
+            {
+                _flipBackCardsFeatureCounter = 0;
+                _flipBackMatchedCards();
+            }
+        }
+    }
+    
+    private void _flipBackMatchedCards()
+    {
+        if (_matchedCards.Count > 2)
+        {
+            int randomIndex = Random.Range(0, _matchedCards.Count);
+            int randomCardValue = _matchedCards[randomIndex].cardValue;
+            int numberOfCards = _matchedCards.Count - 1;
+            _numberOfCardsMatched -= _NUMBER_OF_CARDS_TO_MATCH;
+            for (int i = numberOfCards; i >= 0; i--)
+            {
+                if (_matchedCards[i].cardValue == randomCardValue)
+                {
+                    _matchedCards[i].FlipBackCard();
+                    _unmatchedCards.Add(_matchedCards[i]);
+                    _matchedCards.Remove(_matchedCards[i]);
+                }
+            }
+        }
     }
 
     private void _checkSwitchFeature()
@@ -272,7 +353,7 @@ public class GameController : MonoBehaviour
 
 /* dodavanje nivoa
     copy svih komponenti
-    dodavanje na build settings listu
-    dodavanje dugmeta na display listu + dodavanje dugmeta u listu controllera + parametra za click
     u gamecontroller componenti u editoru promeniti Level Number
+    dodavanje na build settings listu
+    dodavanje dugmeta na display listu + dodavanje dugmeta u listu controllera + parametra za click + times
  */

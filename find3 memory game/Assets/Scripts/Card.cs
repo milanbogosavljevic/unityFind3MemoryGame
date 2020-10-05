@@ -45,8 +45,10 @@ public class Card : MonoBehaviour
         _rotation = 0f;
         _flipAnimationSpeed = 7f;
         _movingSpeed = 3.0f;
-        _upScale = 0.7f;
-        _downScale = 0.3f;
+        //_upScale = 0.7f;
+        _upScale = transform.localScale.x + 0.2f;
+        //_downScale = 0.3f;
+        _downScale = transform.localScale.x - 0.2f;
         _originalPosition = transform.position;
     }
 
