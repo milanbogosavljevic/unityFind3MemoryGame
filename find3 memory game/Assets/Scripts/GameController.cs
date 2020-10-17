@@ -67,23 +67,23 @@ public class GameController : MonoBehaviour
         Color disabledColor = new Color(1f,1f,1f,0.2f);
         Color enabledColor = new Color(0.285f,0.933f,0.207f,1f);
         
-        SpriteRenderer turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<SpriteRenderer>();
+        /*SpriteRenderer turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<SpriteRenderer>();
         SpriteRenderer rotationIcon = icons.transform.Find("rotationIcon").GetComponent<SpriteRenderer>();
         SpriteRenderer movingIcon = icons.transform.Find("movingIcon").GetComponent<SpriteRenderer>();
         SpriteRenderer switchPositionIcon = icons.transform.Find("switchPositionIcon").GetComponent<SpriteRenderer>();
-        SpriteRenderer scaleIcon = icons.transform.Find("scaleIcon").GetComponent<SpriteRenderer>();
+        SpriteRenderer scaleIcon = icons.transform.Find("scaleIcon").GetComponent<SpriteRenderer>();*/
+
+        Image turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<Image>();
+        Image rotationIcon = icons.transform.Find("rotationIcon").GetComponent<Image>();
+        Image movingIcon = icons.transform.Find("movingIcon").GetComponent<Image>();
+        Image switchPositionIcon = icons.transform.Find("switchPositionIcon").GetComponent<Image>();
+        Image scaleIcon = icons.transform.Find("scaleIcon").GetComponent<Image>();
 
         turnBackIcon.color = flipBackCardsFeatureIsActive ? enabledColor : disabledColor;
         rotationIcon.color = randomizeCardRotationOnStart ? enabledColor : disabledColor;
         movingIcon.color = cardsMovingHorizontalIsActive ? enabledColor : disabledColor;
         switchPositionIcon.color = switchCardsPositionsFeatureIsActive ? enabledColor : disabledColor;
         scaleIcon.color = scaleCardFeatureIsActive ? enabledColor : disabledColor;
-
-        /*if (!flipBackCardsFeatureIsActive) { turnBackIcon.color = disabledColor; }
-        if (!randomizeCardRotationOnStart) { rotationIcon.color = disabledColor; }
-        if (!cardsMovingHorizontalIsActive) { movingIcon.color = disabledColor; }
-        if (!switchCardsPositionsFeatureIsActive) { switchPositionIcon.color = disabledColor; }
-        if (!scaleCardFeatureIsActive) { scaleIcon.color = disabledColor; }*/
     }
 
     private void RearrangeCardsPositions()

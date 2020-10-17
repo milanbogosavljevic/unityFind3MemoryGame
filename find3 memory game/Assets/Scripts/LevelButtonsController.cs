@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class LevelSelectionButtonsController : MonoBehaviour
+public class LevelButtonsController : MonoBehaviour
 {
-    [SerializeField] private List<Button> levelButtons;
+    [SerializeField] private List<GameObject> levelButtons;
     [SerializeField] private Sprite goldCard;
     [SerializeField] private Sprite silverCard;
     [SerializeField] private Sprite bronzeCard;
@@ -37,7 +36,7 @@ public class LevelSelectionButtonsController : MonoBehaviour
                 int totalSeconds = (minutes * 60) + seconds;
                 SetButtonImage(i, totalSeconds);
             }
-            levelButtons[i].GetComponentInChildren<Text>().text = time;
+            levelButtons[i].GetComponentInChildren<TextMeshPro>().text = time;
         }
     }
 
@@ -45,22 +44,11 @@ public class LevelSelectionButtonsController : MonoBehaviour
     {
         if (seconds <= silverTimes[buttonIndex])
         {
-            levelButtons[buttonIndex].image.sprite = seconds <= goldTimes[buttonIndex] ? goldCard : silverCard;
+            levelButtons[buttonIndex].GetComponent<SpriteRenderer>().sprite = seconds <= goldTimes[buttonIndex] ? goldCard : silverCard;
         }
         else
         {
-            levelButtons[buttonIndex].image.sprite = bronzeCard;
+            levelButtons[buttonIndex].GetComponent<SpriteRenderer>().sprite = bronzeCard;
         }
-    }
-    
-    public void LoadLevel(int levelNum)
-    {
-        int levelIndex = levelNum + 3;
-        SceneManager.LoadScene(levelIndex);
-    }
-
-    public void BackToWelcomeScreen()
-    {
-        SceneManager.LoadScene(0);
     }
 }

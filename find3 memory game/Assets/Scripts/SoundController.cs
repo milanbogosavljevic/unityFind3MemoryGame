@@ -36,7 +36,6 @@ public class SoundController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         GameObject[] objs = GameObject.FindGameObjectsWithTag("SoundController");
 
-        Debug.Log(objs.Length);
         if (objs.Length > 1)
         {
             Destroy(this.gameObject);
