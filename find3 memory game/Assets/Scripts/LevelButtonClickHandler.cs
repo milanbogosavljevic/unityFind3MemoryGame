@@ -13,10 +13,21 @@ public class LevelButtonClickHandler : MonoBehaviour
         _camera = Camera.main;
     }
 
-    private void OnMouseDown()
+    private void OnMouseUpAsButton()
+    {
+        float oldX = PlayerPrefs.GetFloat("CameraPosition");
+        _cameraX = _camera.transform.position.x;
+        PlayerPrefs.SetFloat("CameraPosition", _cameraX);
+        if (oldX == _cameraX)
+        {
+            SceneManager.LoadScene(levelNumber+3);
+        }
+    }
+
+    /*private void OnMouseDown()
     {
         _cameraX = _camera.transform.position.x;
         PlayerPrefs.SetFloat("CameraPosition", _cameraX);
         SceneManager.LoadScene(levelNumber+3);
-    }
+    }*/
 }
