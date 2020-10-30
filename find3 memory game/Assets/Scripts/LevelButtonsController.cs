@@ -51,4 +51,14 @@ public class LevelButtonsController : MonoBehaviour
             levelButtons[buttonIndex].GetComponent<SpriteRenderer>().sprite = bronzeCard;
         }
     }
+
+    public int GetGoldTime(int index)
+    {
+        return goldTimes[index];
+    }
+    
+    public int GetSilverTime(int index)
+    {
+        return silverTimes[index];
+    }
 }

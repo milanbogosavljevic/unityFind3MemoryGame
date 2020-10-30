@@ -66,12 +66,6 @@ public class GameController : MonoBehaviour
         GameObject icons = GameObject.Find("Icons");
         Color disabledColor = new Color(1f,1f,1f,0.2f);
         Color enabledColor = new Color(0.285f,0.933f,0.207f,1f);
-        
-        /*SpriteRenderer turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<SpriteRenderer>();
-        SpriteRenderer rotationIcon = icons.transform.Find("rotationIcon").GetComponent<SpriteRenderer>();
-        SpriteRenderer movingIcon = icons.transform.Find("movingIcon").GetComponent<SpriteRenderer>();
-        SpriteRenderer switchPositionIcon = icons.transform.Find("switchPositionIcon").GetComponent<SpriteRenderer>();
-        SpriteRenderer scaleIcon = icons.transform.Find("scaleIcon").GetComponent<SpriteRenderer>();*/
 
         Image turnBackIcon = icons.transform.Find("turnBackIcon").GetComponent<Image>();
         Image rotationIcon = icons.transform.Find("rotationIcon").GetComponent<Image>();
@@ -355,5 +349,5 @@ public class GameController : MonoBehaviour
     copy svih komponenti
     u gamecontroller componenti u editoru promeniti Level Number
     dodavanje na build settings listu
-    dodavanje dugmeta na display listu + dodavanje dugmeta u listu controllera + parametra za click + times
+    dodavanje dugmeta na display listu + dodavanje dugmeta u Level Buttons listu u editoru + promena Level Number parametra na dugmetu u editoru + dodavanje gold/silver times
  */
