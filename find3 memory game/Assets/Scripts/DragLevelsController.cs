@@ -21,7 +21,7 @@ public class DragLevelsController : MonoBehaviour
             Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
             _transformPos = transform.position;
             float xPosition = _transformPos.x + (touchDeltaPosition.x * _scrollSpeed);
-            if (xPosition > 0 && xPosition < 5.22f)
+            if (xPosition > 0 && xPosition < 11.32f)
             {
                Vector3 newPosition = new Vector3(xPosition, _transformPos.y, _transformPos.z);
                _camera.transform.position = newPosition;
