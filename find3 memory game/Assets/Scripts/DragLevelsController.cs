@@ -28,19 +28,4 @@ public class DragLevelsController : MonoBehaviour
             }
         }
     }
-    
-    /*void Update()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            _transformPos = transform.position;
-            print(Input.GetAccelerationEvent());
-            float xPosition = _transformPos.x + (Input.GetAxis("Mouse X") * _scrollSpeed);
-            if (xPosition > 0 && xPosition < 5.22f)
-            {
-                Vector3 newPosition = new Vector3(xPosition, _transformPos.y, _transformPos.z);
-                _camera.transform.position = newPosition;
-            }
-        }
-    }*/
 }
